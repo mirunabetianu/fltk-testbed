@@ -4,10 +4,12 @@ import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import TensorDataset
 
+from fltk.util.config.arguments import LearningParameters
+
 
 class Dataset:
 
-    def __init__(self, config, learning_params, rank: int, world_size: int):
+    def __init__(self, config, learning_params: LearningParameters, rank: int, world_size: int):
         self.config = config
         self.learning_params = learning_params
 
@@ -55,9 +57,9 @@ class Dataset:
         """
         Return the data loader for the train dataset.
 
-        :param batch_size: batch size of data loader
+        :param batch_size: batch size of data loader.
         :type batch_size: int
-        :return: torch.utils.data.DataLoader
+        :return: torch.utils.data.DataLoader.
         """
         return self.train_loader
 
@@ -65,7 +67,7 @@ class Dataset:
         """
         Return the data loader for the test dataset.
 
-        :param batch_size: batch size of data loader
+        :param batch_size: batch size of data loader.
         :type batch_size: int
         :return: torch.utils.data.DataLoader
         """
@@ -76,20 +78,20 @@ class Dataset:
         """
         Get a data loader created from a given set of data.
 
-        :param batch_size: batch size of data loader
+        :param batch_size: batch size of data loader.
         :type batch_size: int
-        :param X: data features
+        :param X: data features,
         :type X: numpy.Array()
-        :param Y: data labels
+        :param Y: data labels.
         :type Y: numpy.Array()
         :return: torch.utils.data.DataLoader
         """
-        X_torch = torch.from_numpy(X).float()
+        X_torch = torch.from_numpy(X).float() # pylint: disable=no-member
 
         if "classification_problem" in kwargs and kwargs["classification_problem"] == False:
-            Y_torch = torch.from_numpy(Y).float()
+            Y_torch = torch.from_numpy(Y).float()  # pylint: disable=no-member
         else:
-            Y_torch = torch.from_numpy(Y).long()
+            Y_torch = torch.from_numpy(Y).long() # pylint: disable=no-member
         dataset = TensorDataset(X_torch, Y_torch)
 
         kwargs.pop("classification_problem", None)

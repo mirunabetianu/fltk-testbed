@@ -6,6 +6,9 @@ from .dataset import Dataset
 
 
 class CIFAR10Dataset(Dataset):
+    """
+    CIFAR10 Dataset implementation for Federated learning experiments.
+    """
 
     def __init__(self, config, learning_param, rank: int = 0, world_size: int = None):
         super(CIFAR10Dataset, self).__init__(config, learning_param, rank, world_size)
@@ -19,8 +22,14 @@ class CIFAR10Dataset(Dataset):
             normalize
         ])
 
-        train_dataset = datasets.CIFAR10(root=self.config.get_data_path(), train=True, download=True, transform=transform)
-        sampler = DistributedSampler(train_dataset, rank=rank, num_replicas=self.world_size) if self.world_size else None
+        train_dataset = datasets.CIFAR10(root=self.config.get_data_path(),
+                                         train=True,
+                                         download=True,
+                                         transform=transform)
+        if not self.world_size:
+            sampler = None
+        else:
+            sampler = DistributedSampler(train_dataset, rank=rank, num_replicas=self.world_size)
         train_loader = DataLoader(train_dataset, batch_size=self.learning_params.batch_size, sampler=sampler,
                                   shuffle=(sampler is None))
 
@@ -36,5 +45,5 @@ class CIFAR10Dataset(Dataset):
                                         transform=transform)
         sampler = DistributedSampler(test_dataset, rank=self.rank,
                                      num_replicas=self.world_size) if self.world_size else None
-        test_loader = DataLoader(test_dataset, batch_size=self.learning_params.batch_size, sampler=sampler)
+        test_loader = DataLoader(test_dataset, batch_size=self.learning_params.test_batch_size, sampler=sampler)
         return test_loader

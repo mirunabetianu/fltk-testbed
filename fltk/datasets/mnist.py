@@ -1,3 +1,4 @@
+# pylint: disable=missing-class-docstring,invalid-name,missing-function-docstring
 from torch.utils.data import DataLoader, DistributedSampler
 from torchvision import datasets
 from torchvision import transforms
@@ -29,5 +30,5 @@ class MNIST(Dataset):
                                              transform=self.DEFAULT_TRANSFORM)
         sampler = DistributedSampler(test_dataset, rank=self.rank,
                                      num_replicas=self.world_size) if self.world_size else None
-        test_loader = DataLoader(test_dataset, batch_size=self.learning_params.batch_size, sampler=sampler)
+        test_loader = DataLoader(test_dataset, batch_size=self.learning_params.test_batch_size, sampler=sampler)
         return test_loader

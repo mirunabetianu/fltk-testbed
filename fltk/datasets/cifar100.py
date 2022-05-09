@@ -6,6 +6,9 @@ from .dataset import Dataset
 
 
 class CIFAR100Dataset(Dataset):
+    """
+    CIFAR100 Dataset implementation for Federated learning experiments.
+    """
 
     DEFAULT_TRANSFORM = transforms.Compose([
         transforms.RandomHorizontalFlip(),
@@ -33,5 +36,5 @@ class CIFAR100Dataset(Dataset):
                                          transform=self.DEFAULT_TRANSFORM)
         sampler = DistributedSampler(test_dataset, rank=self.rank,
                                      num_replicas=self.world_size) if self.world_size else None
-        test_loader = DataLoader(test_dataset, batch_size=self.learning_params.batch_size, sampler=sampler)
+        test_loader = DataLoader(test_dataset, batch_size=self.learning_params.test_batch_size, sampler=sampler)
         return test_loader
